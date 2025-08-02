@@ -1,11 +1,5 @@
 export default {
     home: {
-        common:{
-            selectLanguage: '选择语言',
-            language: '语言',
-            openMenu: '打开菜单',
-            closeMenu: '关闭菜单',
-        },
         seo:{
           title: '免费临时邮箱 | FreeTempMail',
           description: 'FreeTempMail 是一个免费的临时邮箱服务，允许您创建一次性邮箱地址以保护您的隐私。无需注册，即时生成，自动接收邮件。',
@@ -184,6 +178,10 @@ export default {
       hoursAgo: '小时前',
       daysAgo: '天前',
       queryEmailFailed: '查询邮件失败，请检查邮箱地址',
+      selectLanguage: '选择语言',
+      language: '语言',
+      openMenu: '打开菜单',
+      closeMenu: '关闭菜单',
     },
     auth: {
       logout: '退出登录',

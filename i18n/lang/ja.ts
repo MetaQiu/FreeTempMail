@@ -17,12 +17,6 @@ export default {
             answer6: 'はい！当社は100%無料の一時メールサービスを提供し、登録不要で使用制限もありません。Gmail、Yahoo Mailなどの従来のメールサービスと比較して、一時メールの最大の利点は匿名性とプライバシー保護です。無制限に一時メールアドレスを生成でき、個人メールの漏洩やスパム嫌がらせを効果的に回避できます。',
           
         },
-        common:{
-            selectLanguage: '言語を選択',
-            language: '言語',
-            openMenu: 'メニューを開く',
-            closeMenu: 'メニューを閉じる',
-        },
         seo:{
             title: 'FreeTempMail:開源のNuxt3 SaaSオールインワン出海テンプレート | 多言語、支払い、SEO対応（Nuxt3） | FreeTempMail',
             description: 'FreeTempMailは、Nuxt3を使用した開源の企業向けSaaSテンプレートです。Stripe/Creamの支払い、Google OAuth、多言語ルーティング、SEOツールがプリビルドされています。開発者は、SSRまたはSSGのグローバルWebアプリケーションを迅速に構築できます。',
@@ -200,6 +194,10 @@ export default {
       hoursAgo: '時間前',
       daysAgo: '日前',
       queryEmailFailed: 'メールの検索に失敗しました。メールアドレスを確認してください',
+      selectLanguage: '言語を選択',
+      language: '言語',
+      openMenu: 'メニューを開く',
+      closeMenu: 'メニューを閉じる',
     },
     auth: {
       logout: 'ログアウト',

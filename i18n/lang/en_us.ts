@@ -1,11 +1,5 @@
 export default {
     home: {
-        common:{
-            selectLanguage: 'Select Language',
-            language: 'Language',
-            openMenu: 'Open Menu',
-            closeMenu: 'Close Menu',
-        },
         seo:{
             title: 'Free Temporary Email | FreeTempMail',
             description: 'FreeTempMail is a free temporary email service that allows you to create disposable email addresses to protect your privacy. No registration required, instant generation, automatic email reception.',
@@ -183,6 +177,10 @@ export default {
       hoursAgo: 'hours ago',
       daysAgo: 'days ago',
       queryEmailFailed: 'Failed to query emails, please check the email address',
+      selectLanguage: 'Select Language',
+      language: 'Language',
+      openMenu: 'Open Menu',
+      closeMenu: 'Close Menu',
     },
     auth: {
       logout: 'Logout',
