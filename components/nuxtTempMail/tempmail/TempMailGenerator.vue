@@ -433,14 +433,8 @@ import { formatTime, copyToClipboard } from '~/lib/utils'
 
   // 检查是否需要显示退出登录按钮
   const checkShowLogoutButton = () => {
-    if (import.meta.client) {
-      // 检查是否有认证 Cookie 或 sessionStorage 中的密码
-      const hasAuthCookie = document.cookie.includes('tempmail-auth=authenticated')
-      const hasStoredPassword = sessionStorage.getItem('access_password')
-
-      // 如果有认证状态，则显示退出登录按钮
-      showLogoutButton.value = !!(hasAuthCookie || hasStoredPassword)
-    }
+    // 始终显示退出登录按钮
+    showLogoutButton.value = true
   }
 
   // 退出登录方法
