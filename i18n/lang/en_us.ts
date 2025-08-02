@@ -182,6 +182,13 @@ export default {
       openMenu: 'Open Menu',
       closeMenu: 'Close Menu',
     },
+    notifications: {
+      emailsRefreshed: 'Refreshed {count} emails',
+      newEmailsReceived: 'Received {count} new emails',
+      emailCheckComplete: 'Email check complete, no new emails',
+      emailCheckFailed: 'Email check failed, please try again later',
+      authorizationFailed: 'API x-api-password authorization failed',
+    },
     auth: {
       logout: 'Logout',
       loggingOut: 'Logging out...',

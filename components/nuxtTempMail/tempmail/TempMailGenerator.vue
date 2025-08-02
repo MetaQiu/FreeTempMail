@@ -1,5 +1,7 @@
 <template>
     <div class="bg-gradient-to-br from-gray-50 via-green-50 to-blue-50 min-h-screen relative overflow-hidden">
+
+
       <!-- 背景装饰 -->
       <div class="absolute inset-0 opacity-30">
         <div class="absolute top-10 left-10 w-32 h-32 bg-gradient-to-br from-green-200 to-blue-200 rounded-full blur-xl"></div>
@@ -361,6 +363,25 @@
           {{ $t('common.operationSuccess') }}
         </div>
       </div>
+
+      <!-- API通知提示 -->
+      <div
+        v-if="showApiNotification"
+        :class="[
+          'fixed top-32 right-4 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300 transform',
+          apiNotificationType === 'success' ? 'bg-gradient-to-r from-green-500 to-blue-500' : 'bg-gradient-to-r from-red-500 to-red-600'
+        ]"
+      >
+        <div class="flex items-center gap-2">
+          <svg v-if="apiNotificationType === 'success'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          {{ apiNotificationMessage }}
+        </div>
+      </div>
     </div>
   </template>
   
@@ -368,6 +389,9 @@
 import { Card, CardHeader, CardTitle, CardContent } from '#components'
 import { Button } from '#components'
 import { formatTime, copyToClipboard } from '~/lib/utils'
+
+// 国际化
+const { t } = useI18n()
   
   // 邮件类型定义
   interface EmailAttachment {
@@ -410,6 +434,22 @@ import { formatTime, copyToClipboard } from '~/lib/utils'
   const isLoggingOut = ref(false)
   const showLogoutButton = ref(false)
 
+  // 通知相关 - 使用简单的通知系统
+  const showApiNotification = ref(false)
+  const apiNotificationMessage = ref('')
+  const apiNotificationType = ref<'success' | 'error'>('success')
+
+  // 显示API通知
+  const showNotification = (message: string, type: 'success' | 'error' = 'success', duration: number = 3000) => {
+    apiNotificationMessage.value = message
+    apiNotificationType.value = type
+    showApiNotification.value = true
+
+    setTimeout(() => {
+      showApiNotification.value = false
+    }, duration)
+  }
+
   // API 认证 - 暂时注释，等待 Nuxt 自动导入生效
   // const { $authFetch } = useApiAuth()
 
@@ -435,6 +475,43 @@ import { formatTime, copyToClipboard } from '~/lib/utils'
   const checkShowLogoutButton = () => {
     // 始终显示退出登录按钮
     showLogoutButton.value = true
+  }
+
+  // 处理API认证错误的通用方法
+  const handleApiError = async (error: any, showAlert: boolean = true) => {
+    console.error('API Error:', error)
+
+    // 检查多种可能的401错误格式
+    const is401Error = error.statusCode === 401 ||
+                      error.status === 401 ||
+                      (error.data && error.data.statusCode === 401) ||
+                      (error.response && error.response.status === 401) ||
+                      error.message?.includes('401')
+
+    if (is401Error) {
+      // 401认证错误，显示通知并跳转到登录页面
+      if (showAlert) {
+        const message = t('auth.loginRequired') + ' - ' + t('notifications.authorizationFailed')
+        showNotification(message, 'error', 5000)
+      }
+
+      // 清除认证信息
+      if (import.meta.client) {
+        sessionStorage.removeItem('access_password')
+        localStorage.removeItem('access_password')
+        sessionStorage.removeItem('tempmail_auth')
+        sessionStorage.removeItem('tempmail_auth_time')
+      }
+
+      // 延迟跳转，让用户看到通知
+      setTimeout(async () => {
+        await navigateTo('/login')
+      }, 2000)
+
+      return true // 表示已处理401错误
+    }
+
+    return false // 表示不是401错误
   }
 
   // 退出登录方法
@@ -568,9 +645,15 @@ import { formatTime, copyToClipboard } from '~/lib/utils'
         emails.value = newEmails
         lastCheckTime.value = new Date().toISOString()
         updateLastUpdateTime()
+
+        // 显示成功通知
+        showNotification(t('notifications.emailsRefreshed', { count: response.emails.length }), 'success', 2000)
       }
     } catch (error) {
-      console.error('Refresh emails failed:', error)
+      const handled = await handleApiError(error, true)
+      if (!handled) {
+        console.error('Refresh emails failed:', error)
+      }
     } finally {
       isRefreshing.value = false
     }
@@ -609,12 +692,25 @@ import { formatTime, copyToClipboard } from '~/lib/utils'
 
           if (newEmailsWithDate.length > 0) {
             emails.value = [...newEmailsWithDate, ...emails.value]
+
+            // 显示新邮件通知
+            showNotification(t('notifications.newEmailsReceived', { count: newEmailsWithDate.length }), 'success', 3000)
+          } else {
+            // 没有新邮件时也显示通知
+            showNotification(t('notifications.emailCheckComplete'), 'success', 2000)
           }
+        } else {
+          // 没有新邮件时显示通知
+          showNotification(t('notifications.emailCheckComplete'), 'success', 2000)
         }
         lastCheckTime.value = response.lastChecked
       }
     } catch (error) {
-      console.error('Poll new emails failed:', error)
+      const handled = await handleApiError(error, true) // poll接口也显示401错误通知
+      if (!handled) {
+        console.error('Poll new emails failed:', error)
+        showNotification(t('notifications.emailCheckFailed'), 'error', 3000)
+      }
     }
   }
   
@@ -662,9 +758,12 @@ import { formatTime, copyToClipboard } from '~/lib/utils'
         queryEmail.value = ''
       }
     } catch (error: any) {
-      console.error('Query emails failed:', error)
-      const { $t } = useNuxtApp() as any
-      alert($t('common.queryEmailFailed'))
+      const handled = await handleApiError(error, true)
+      if (!handled) {
+        console.error('Query emails failed:', error)
+        const { $t } = useNuxtApp() as any
+        alert($t('common.queryEmailFailed'))
+      }
     } finally {
       isQuerying.value = false
     }

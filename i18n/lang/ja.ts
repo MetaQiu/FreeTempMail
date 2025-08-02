@@ -199,6 +199,13 @@ export default {
       openMenu: 'メニューを開く',
       closeMenu: 'メニューを閉じる',
     },
+    notifications: {
+      emailsRefreshed: '{count}通のメールを更新しました',
+      newEmailsReceived: '{count}通の新しいメールを受信しました',
+      emailCheckComplete: 'メールチェック完了、新しいメールはありません',
+      emailCheckFailed: 'メールチェックに失敗しました。後でもう一度お試しください',
+      authorizationFailed: 'API x-api-password 認証に失敗しました',
+    },
     auth: {
       logout: 'ログアウト',
       loggingOut: 'ログアウト中...',

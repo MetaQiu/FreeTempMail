@@ -183,6 +183,13 @@ export default {
       openMenu: '打开菜单',
       closeMenu: '关闭菜单',
     },
+    notifications: {
+      emailsRefreshed: '已刷新 {count} 封邮件',
+      newEmailsReceived: '收到 {count} 封新邮件',
+      emailCheckComplete: '邮件检查完成，暂无新邮件',
+      emailCheckFailed: '邮件检查失败，请稍后重试',
+      authorizationFailed: 'API x-api-password authorization 失败',
+    },
     auth: {
       logout: '退出登录',
       loggingOut: '退出中...',
